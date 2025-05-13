@@ -1,135 +1,97 @@
-Linear Scan Approach Pseudocode:
+Algorithm MaxProductLinearScanRecursive(nums)
+{
+    Return Recurse(nums, 0, -∞, -∞, -∞, ∞, ∞)
+}
 
-Function MaxProductLinearScan(nums):
-    // Initialize tracking variables
-    max1, max2, max3 = -∞, -∞, -∞
-    min1, min2 = ∞, ∞
-    
-    // Single scan through the array
-    For each num in nums:
-        // Update max values (largest to smallest)
-        If num ≥ max1:
-            max3 = max2
-            max2 = max1
-            max1 = num
-        Else if num ≥ max2:
-            max3 = max2
-            max2 = num
-        Else if num ≥ max3:
-            max3 = num
-            
-        // Update min values (smallest to larger)
-        If num ≤ min1:
-            min2 = min1
-            min1 = num
-        Else if num ≤ min2:
-            min2 = num
-    
-    // Compare the two possible maximum products
-    product1 = max1 * max2 * max3
-    product2 = min1 * min2 * max1
-    
-    Return Maximum(product1, product2)
+Algorithm Recurse(nums, index, max1, max2, max3, min1, min2)
+{
+    If index = length(nums) then
+    {
+        product1 := max1 * max2 * max3
+        product2 := min1 * min2 * max1
+        Return Maximum(product1, product2)
+    }
 
-Data Example:
-For an input array nums = [-10, -10, 5, 2]:
+    num := nums[index]
 
-Initial Values:
+    If num >= max1 then
+    {
+        max3 := max2
+        max2 := max1
+        max1 := num
+    }
+    Else if num >= max2 then
+    {
+        max3 := max2
+        max2 := num
+    }
+    Else if num >= max3 then
+    {
+        max3 := num
+    }
 
-max1 = -∞, max2 = -∞, max3 = -∞
+    If num <= min1 then
+    {
+        min2 := min1
+        min1 := num
+    }
+    Else if num <= min2 then
+    {
+        min2 := num
+    }
 
-min1 = ∞, min2 = ∞
+    Return Recurse(nums, index + 1, max1, max2, max3, min1, min2)
+}
 
-After Iterating Over Each Element:
-
-After processing -10: max1 = -10, max2 = -∞, max3 = -∞, min1 = -10, min2 = ∞
-
-After processing the second -10: max1 = -10, max2 = -10, max3 = -∞, min1 = -10, min2 = -10
-
-After processing 5: max1 = 5, max2 = -10, max3 = -10, min1 = -10, min2 = -10
-
-After processing 2: max1 = 5, max2 = 2, max3 = -10, min1 = -10, min2 = -10
-
-Final Product Calculation:
-
-product1 = 5 * 2 * -10 = -100
-
-product2 = -10 * -10 * 5 = 500
-
-Return the maximum: 500
-
-Time Complexity:
-O(n): The array is iterated once, and each operation (comparison, assignment) is O(1).
+Time Complexity: O(n), where n is the length of the input array.
 
 ------------------------------------------------------------------------------------------------------------------------------------------
 
 Heap Approach Pseudocode:
 
-Function MaxProductHeap(nums):
-    // Find the three largest elements
-    largest_three = FindNLargest(nums, 3)
-    
-    // Find the two smallest elements
-    smallest_two = FindNSmallest(nums, 2)
-    
-    // Calculate two possible products
-    product1 = largest_three[0] * largest_three[1] * largest_three[2]
-    product2 = smallest_two[0] * smallest_two[1] * largest_three[0]
-    
-    Return Maximum(product1, product2)
+Algorithm MaxProductHeap(nums)
+{
+    largest_three := FindNLargest(nums, 3);
 
-Function FindNLargest(nums, n):
-    // Create max heap from all elements
-    maxHeap = CreateMaxHeap(nums)
-    
-    // Extract n largest elements
-    result = []
-    For i = 1 to n:
-        If maxHeap is not empty:
-            result.append(ExtractMax(maxHeap))
-    
-    Return result
+    smallest_two := FindNSmallest(nums, 2);
 
-Function FindNSmallest(nums, n):
-    // Create min heap from all elements
-    minHeap = CreateMinHeap(nums)
-    
-    // Extract n smallest elements
-    result = []
-    For i = 1 to n:
-        If minHeap is not empty:
-            result.append(ExtractMin(minHeap))
-    
-    Return result
+    product1 := largest_three[0] * largest_three[1] * largest_three[2];
+    product2 := smallest_two[0] * smallest_two[1] * largest_three[0];
 
-Data Example:
-For an input array nums = [-10, -10, 5, 2]:
+    Return Maximum(product1, product2);
+}
 
-Creating Heaps:
+Algorithm FindNLargest(nums, n)
+{
+    maxHeap := CreateMaxHeap(nums);
 
-Max Heap (nums = [-10, -10, 5, 2]):
+    result := [];
+    For i := 1 to n step 1 do
+    {
+        If NOT IsEmpty(maxHeap) then
+        {
+            result.append(ExtractMax(maxHeap));
+        }
+    }
 
-Heap: [5, 2, -10, -10]
+    Return result;
+}
 
-Min Heap (nums = [-10, -10, 5, 2]):
+Algorithm FindNSmallest(nums, n)
+{
+    minHeap := CreateMinHeap(nums);
 
-Heap: [-10, -10, 5, 2]
+    result := [];
+    For i := 1 to n step 1 do
+    {
+        If NOT IsEmpty(minHeap) then
+        {
+            result.append(ExtractMin(minHeap));
+        }
+    }
 
-Finding Largest Three:
-
-Extract the three largest elements: [5, 2, -10]
-
-Finding Smallest Two:
-
-Extract the two smallest elements: [-10, -10]
-
-Final Product Calculation:
-
-product1 = 5 * 2 * -10 = -100
-
-product2 = -10 * -10 * 5 = 500
-
-Return the maximum: 500
+    Return result;
+}
 
 Time Complexity:
 O(n): Building the heap takes O(n), and extracting the top elements takes O(log n) for each extraction.
